@@ -1,1 +1,5 @@
-[]
+[
+  "tests/test_adicionar_produtos_carrinho.py::TestCT01::test_ct01_adicionar_produtos_carrinho",
+  "tests/test_login_invalido.py::TestCT03::test_ct03_login_invalido",
+  "tests/test_login_valido.py::TestCT02::test_ct02_login_valido"
+]

@@ -1,0 +1,5 @@
+{
+  "test_adicionar_produtos_carrinho.py": true,
+  "test_login_invalido.py": true,
+  "test_login_valido.py": true
+}
