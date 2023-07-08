@@ -1,6 +1,6 @@
-from selenium.webdriver.common.by import By
-import conftest
 import pytest
+
+from pages.login_page import LoginPage
 
 
 @pytest.mark.usefixtures("setup_teardown")
@@ -8,14 +8,14 @@ import pytest
 @pytest.mark.login
 class TestCT03:
     def test_ct03_login_invalido(self):
-        driver = conftest.driver
-        driver.find_element(By.ID, "user-name").send_keys("standard_user")
-        driver.find_element(By.ID, "password").send_keys("1234")
-        driver.find_element(By.ID, "login-button").click()
+        login_page = LoginPage()
 
-        assert driver.find_element(By.XPATH, "//*[@class='error-message-container error']").is_displayed()
+        login_page.fazer_login("standard_user", "1234")
+        login_page.verifica_login_invalido()
+        # driver = conftest.driver
+
+        # assert driver.find_element(By.XPATH, "//*[@class='error-message-container error']").is_displayed()
 
         # verifica se nao está visivel o texto da pagina de produtos
         # usar find elements pq retorna true ou false como retorna uma lista valido se está vazia
-        assert len(driver.find_elements(By.XPATH, "//span[@class='title']")) == 0
-
+        # assert len(driver.find_elements(By.XPATH, "//span[@class='title']")) == 0
