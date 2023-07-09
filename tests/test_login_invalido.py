@@ -4,18 +4,18 @@ from pages.login_page import LoginPage
 
 
 @pytest.mark.usefixtures("setup_teardown")
-# switch de teste pode ser utilizada para rodar o teste individualmente pytest -v -m login
 @pytest.mark.login
 class TestCT03:
     def test_ct03_login_invalido(self):
+        mensagem_erro_esperada = "Epic sadface: Username and password do not match any user in this service"
+
         login_page = LoginPage()
 
         login_page.fazer_login("standard_user", "1234")
+
+        # verifica se a mensagem de erro apareceu
         login_page.verifica_login_invalido()
-        # driver = conftest.driver
 
-        # assert driver.find_element(By.XPATH, "//*[@class='error-message-container error']").is_displayed()
+        # verifica o texto da mensagem de erro
+        login_page.verificar_texto_mensagem_erro_login(mensagem_erro_esperada)
 
-        # verifica se nao está visivel o texto da pagina de produtos
-        # usar find elements pq retorna true ou false como retorna uma lista valido se está vazia
-        # assert len(driver.find_elements(By.XPATH, "//span[@class='title']")) == 0

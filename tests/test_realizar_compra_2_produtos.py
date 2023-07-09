@@ -1,30 +1,60 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
+import pytest
 
-driver = webdriver.Chrome()
-driver.implicitly_wait(5)
-driver.maximize_window()
-driver.get('https://www.saucedemo.com/')
-
-driver.find_element(By.ID, "user-name").send_keys("standard_user")
-driver.find_element(By.ID, "password").send_keys("secret_sauce")
-driver.find_element(By.ID, "login-button").click()
-
-driver.find_element(By.ID, "add-to-cart-sauce-labs-backpack").click()
-driver.find_element(By.ID, "add-to-cart-sauce-labs-bolt-t-shirt").click()
-driver.find_element(By.XPATH, "//*[@class='shopping_cart_link']").click()
-
-assert driver.find_element(By.XPATH, "//*[@class='inventory_item_name' and text()='Sauce Labs Backpack']").is_displayed()
-assert driver.find_element(By.XPATH, "//*[@class='inventory_item_name' and text()='Sauce Labs Bolt T-Shirt']").is_displayed()
-
-driver.find_element(By.ID, "checkout").click()
-driver.find_element(By.ID, "first-name").send_keys("maria")
-driver.find_element(By.ID, "last-name").send_keys("sousa")
-driver.find_element(By.ID, "postal-code").send_keys("123")
-
-driver.find_element(By.ID, "continue").click()
-driver.find_element(By.ID, "finish").click()
-assert driver.find_element(By.XPATH, "//*[@class='complete-header']").is_displayed()
+from pages.carrinho_page import CarrinhoPage
+from pages.checkout_complete_page import CheckoutCompletePage
+from pages.checkout_page import CheckoutPage
+from pages.home_page import HomePage
+from pages.login_page import LoginPage
+from pages.overview_page import OverviewPage
 
 
+@pytest.mark.usefixtures("setup_teardown")
+@pytest.mark.carrinho
+class TestCT04:
+    def test_ct04_realizar_compra_1_produto(self):
+        login_page = LoginPage()
+        home_page = HomePage()
+        carrinho_page = CarrinhoPage()
+        checkout_page = CheckoutPage()
+        overview_page = OverviewPage()
+        checkout_complete_page = CheckoutCompletePage()
 
+        produto_1 = "Sauce Labs Backpack"
+        produto_2 = "Sauce Labs Bike Light"
+
+        first_name = "Maria"
+        last_name = "Santos"
+        postal_code = "123456"
+
+        header_text = "Thank you for your order!"
+
+        login_page.fazer_login("standard_user", "secret_sauce")
+
+        home_page.adicionar_ao_carrinho(produto_1)
+        home_page.acessar_carrinho()
+        carrinho_page.verificar_produto_carrinho_existe(produto_1)
+
+        # volta e adiciona outro produto
+        carrinho_page.clicar_continuar_comprando()
+
+        home_page.adicionar_ao_carrinho(produto_2)
+        home_page.acessar_carrinho()
+        carrinho_page.verificar_produto_carrinho_existe(produto_2)
+
+        # clica para checkout
+        carrinho_page.clicar_checkout()
+
+        # preenche os dados do checkout
+        checkout_page.preencher_checkout(first_name, last_name, postal_code)
+
+        # clica para continuar
+        checkout_page.clicar_continuar()
+
+        # finaliza compra
+        overview_page.clicar_finish()
+
+        # verificar se a compra foi realizada
+        checkout_complete_page.verifica_header_existe()
+
+        # verifica texto ao finalizar compra
+        checkout_complete_page.verifica_texto_header(header_text)

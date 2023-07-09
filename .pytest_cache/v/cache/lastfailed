@@ -1,1 +1,3 @@
-{}
+{
+  "tests/test_login_invalido.py::TestCT03::test_ct03_login_invalido": true
+}
